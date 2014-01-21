@@ -1,6 +1,12 @@
 <p> Name: <%= @product["name"] %> </p>
 <p> Price: <%= @product["price"] %></p>
 <p> <%= @product["description"] %></p>
+<p>Categories</p>
+<ul>
+	<% @categories.each do |category| %>
+	<li><a href="/categories/<%= category['c_id'] %>"><%= category["cat"] %></a></li>
+	<% end %>
+</ul>
 
 <a href="<%=@product["id"]%>/edit"> Edit this product.</a>
 <form action="/products/<%= @product["id"] %>/destroy" method="post">

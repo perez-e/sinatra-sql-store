@@ -5,3 +5,9 @@
     <input type="submit" name="" value="Delete this category.">
 </form>
 
+<p>List of Products</p>
+<ul>
+	<% @products.each do |product| %>
+	<li><a href="/products/<%= product['p_id'] %>"><%= product["name"] %></a></li>
+	<% end %>
+</ul>
