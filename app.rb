@@ -31,11 +31,15 @@ end
 
 # Get the form for creating a new product
 get '/products/new' do
+  c = PGconn.new(:host => "localhost", :dbname => dbname)
+  @categories = c.exec_params("SELECT * FROM categories;")
+  c.close
   erb :new_product
 end
 
 # POST to create a new product
 post '/products' do
+  raise params
   c = PGconn.new(:host => "localhost", :dbname => dbname)
 
   # Insert the new row into the products table.
@@ -51,6 +55,7 @@ end
 
 # Update a product
 post '/products/:id' do
+  raise params
   c = PGconn.new(:host => "localhost", :dbname => dbname)
 
   # Update the product.
@@ -63,7 +68,15 @@ end
 get '/products/:id/edit' do
   c = PGconn.new(:host => "localhost", :dbname => dbname)
   @product = c.exec_params("SELECT * FROM products WHERE products.id = $1", [params["id"]]).first
+  @categories = c.exec_params("SELECT * FROM categories;")
+  product_categories = c.exec_params("SELECT p.name AS name, c.name AS cat, p.id AS p_id, c.id AS c_id FROM products AS p INNER JOIN product_copy AS copy ON p.id=copy.product_id INNER JOIN categories AS c ON c.id=copy.category_id WHERE p.id=$1 ;",[params[:id].to_i])
   c.close
+
+  @cat=[]
+  product_categories.each do |cats|
+    @cat.push cats["cat"]
+  end
+
   erb :edit_product
 end
 # DELETE to delete a product

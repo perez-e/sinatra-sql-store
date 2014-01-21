@@ -17,4 +17,13 @@
   <p>
     <input type="submit" name="" value="Edit the product.">
   </p>
+
+   <% @categories.each do |category| %>
+      <% if @cat.include?(category['name']) %>
+        <input type="checkbox" name="category[]" value="<%= category['name'] %>" checked><%= category['name'] %><br> 
+      <% else %>
+        <input type="checkbox" name="category[]" value="<%= category['name'] %>"><%= category['name'] %><br> 
+      <% end %>
+  <% end %>
+
 </form>
