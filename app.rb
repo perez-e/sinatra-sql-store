@@ -57,21 +57,26 @@ post '/products' do
                   [new_product_id, category_id])
   end
 
-
-
-
   c.close
   redirect "/products/#{new_product_id}"
 end
 
 # Update a product
 post '/products/:id' do
-  params.kdsjnjdsnfkj
+ 
   c = PGconn.new(:host => "localhost", :dbname => dbname)
 
   # Update the product.
   c.exec_params("UPDATE products SET (name, price, description) = ($2, $3, $4) WHERE products.id = $1 ",
                 [params["id"], params["name"], params["price"], params["description"]])
+  c.exec_params("DELETE FROM product_copy WHERE product_id = $1", [params[:id]])
+
+  categories = params[:category]
+  categories.each do |category_id|
+    c.exec_params("INSERT INTO product_copy (product_id, category_id) VALUES ($1,$2)",
+                  [params[:id], category_id])
+  end
+
   c.close
   redirect "/products/#{params["id"]}"
 end
@@ -95,6 +100,7 @@ post '/products/:id/destroy' do
 
   c = PGconn.new(:host => "localhost", :dbname => dbname)
   c.exec_params("DELETE FROM products WHERE products.id = $1", [params["id"]])
+  c.exec_params("DELETE FROM product_copy WHERE products_id = $1", [params[:id]])
   c.close
   redirect '/products'
 end
@@ -156,11 +162,13 @@ get '/categories/:id/edit' do
   c.close
   erb :edit_category
 end
+
 # DELETE to delete a product
 post '/categories/:id/destroy' do
 
   c = PGconn.new(:host => "localhost", :dbname => dbname)
   c.exec_params("DELETE FROM categories WHERE categories.id = $1", [params["id"]])
+  c.exec_params("DELETE FROM product_copy WHERE category_id = $1", [params[:id]])
   c.close
   redirect '/categories'
 end
