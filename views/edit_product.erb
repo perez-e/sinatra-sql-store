@@ -20,9 +20,9 @@
 
    <% @categories.each do |category| %>
       <% if @cat.include?(category['name']) %>
-        <input type="checkbox" name="category[]" value="<%= category['name'] %>" checked><%= category['name'] %><br> 
+        <input type="checkbox" name="category[]" value="<%= category['id'] %>" checked><%= category['name'] %><br> 
       <% else %>
-        <input type="checkbox" name="category[]" value="<%= category['name'] %>"><%= category['name'] %><br> 
+        <input type="checkbox" name="category[]" value="<%= category['id'] %>"><%= category['name'] %><br> 
       <% end %>
   <% end %>
 

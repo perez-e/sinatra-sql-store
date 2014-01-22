@@ -39,7 +39,7 @@ end
 
 # POST to create a new product
 post '/products' do
-  raise params
+  
   c = PGconn.new(:host => "localhost", :dbname => dbname)
 
   # Insert the new row into the products table.
@@ -49,13 +49,24 @@ post '/products' do
   # Assuming you created your products table with "id SERIAL PRIMARY KEY",
   # This will get the id of the product you just created.
   new_product_id = c.exec_params("SELECT currval('products_id_seq');").first["currval"]
+
+  categories = params[:category]
+
+  categories.each do |category_id|
+    c.exec_params("INSERT INTO product_copy (product_id, category_id) VALUES ($1,$2)",
+                  [new_product_id, category_id])
+  end
+
+
+
+
   c.close
   redirect "/products/#{new_product_id}"
 end
 
 # Update a product
 post '/products/:id' do
-  raise params
+  params.kdsjnjdsnfkj
   c = PGconn.new(:host => "localhost", :dbname => dbname)
 
   # Update the product.
